@@ -21,10 +21,10 @@ const Header = () => {
     }
 
     const user = cookies.user;
-
+    const token = cookies.token;
     const UserMenu = (
         <Image
-            src={user.image ? process.env.REACT_APP_API_BASE_URL + 'storage/' + user.image : 'https://via.placeholder.com/150'}
+            src={token && user.image ? process.env.REACT_APP_API_BASE_URL + 'storage/' + user.image : 'https://via.placeholder.com/150'}
             alt="UserName profile image"
             roundedCircle
             style={{ width: '30px' }}
@@ -41,7 +41,7 @@ const Header = () => {
                         <Nav className="justify-content-end flex-grow-1 pe-3">
                             <Nav.Link href="/home">Home</Nav.Link>
                             <Nav.Link href="#link">Link</Nav.Link>
-                            {cookies.token ? (
+                            {token ? (
                                 <>
                                     <NavDropdown title="Relatórios" id="reports-dropdown">
                                         <NavDropdown.Item href="/water-intake-report">Consumo de Água</NavDropdown.Item>
