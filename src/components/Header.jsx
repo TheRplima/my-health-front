@@ -51,6 +51,9 @@ const Header = () => {
                                         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                                     </NavDropdown>
                                     <NavDropdown title={UserMenu} id="profile-dropdown">
+                                        <NavDropdown.Item href="/profile">
+                                            <FontAwesomeIcon icon={['fa', 'user']} /> Perfil
+                                        </NavDropdown.Item>
                                         <NavDropdown.Item href="/settings">
                                             <FontAwesomeIcon icon={['fa', 'sliders']} /> Preferências
                                         </NavDropdown.Item>
