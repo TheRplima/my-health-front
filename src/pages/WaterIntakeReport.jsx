@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
-
+import Table from 'react-bootstrap/Table';
 import useWaterIntakeData from '../services/useWaterIntakeData';
 
 import FormControlWaterIntakeContainerSelect from '../components/FormControlWaterIntakeContainerSelect';
+import { Pagination } from 'react-laravel-paginex'
 import { confirm } from "../components/ConfirmationModal";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import ReportsPagination from '../components/ReportsPagination';
 
 export default function WaterIntakeReport() {
     library.add(fas);
@@ -21,40 +21,40 @@ export default function WaterIntakeReport() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [waterIntakes, setWaterIntakes] = useState([]);
     const [paginationData, setPaginationData] = useState({});
-    const { getWaterIntakeReport } = useWaterIntakeData()
+    const { getWaterIntakeReport, deleteWaterIntake } = useWaterIntakeData()
+    const [params, setParams] = useState({})
 
     const handleWaterIntakeReportFormSubmit = async (e) => {
         e.preventDefault()
 
-        await getWaterIntakeReport({ initialDate, finalDate, amount, page, per_page: perPage }).then(response => {
-            console.log(response)
+        setParams({ initialDate, finalDate, amount, perPage })
+        await getWaterIntakeReport({ initialDate, finalDate, amount, page, perPage }).then(response => {
             setWaterIntakes(response.data.water_intake_list.data);
             setTotalAmount(response.data.total_amount);
-            delete response.data.water_intake_list.data;
             setPaginationData(response.data.water_intake_list);
         }).catch((error) => {
             console.log(error)
         });
     }
 
-    const paginationClicked = (event) => {
-        const url = event.target.getAttribute('data-page');
-        setPage(url.split("=")[1]);
-        getWaterIntakeReport({ initialDate, finalDate, amount, page, per_page: perPage }).then(response => {
+    const paginationClicked = (data) => {
+        getWaterIntakeReport(data).then(response => {
             setWaterIntakes(response.data.water_intake_list.data);
-            setTotalAmount(response.data.total_amount);
-            delete response.data.water_intake_list.data;
             setPaginationData(response.data.water_intake_list);
         }).catch((error) => {
             console.log(error)
         });
     }
 
-    const handleDeleteButtonClick = (id) => {
+    const handleDeleteButtonClick = (id,e) => {
         confirm('Deseja realmente excluir este registro?', 'Remover registro', 'Sim', 'Não').then(
             (response) => {
                 if (response) {
-                    // deleteWeightControl(id)
+                    deleteWaterIntake(id).then(() => {
+                        handleWaterIntakeReportFormSubmit(e)
+                    }).catch((error) => {
+                        console.log(error)
+                    })
                 }
             })
     }
@@ -66,38 +66,18 @@ export default function WaterIntakeReport() {
                     <Card>
                         <Card.Body>
                             <Card.Title>Relatório de consumo de água</Card.Title>
-                            {/* <Form>
-                                    <Form.Group>
-                                        <Form.Label>Meta diária de consumo de água</Form.Label>
-                                        <Form.Control type="number" placeholder="Digite a meta diária de consumo de água" />
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Consumo de água no dia</Form.Label>
-                                        <Form.Control type="number" placeholder="Digite o consumo de água no dia" />
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Consumo de água no mês</Form.Label>
-                                        <Form.Control type="number" placeholder="Digite o consumo de água no mês" />
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Label>Consumo de água no ano</Form.Label>
-                                        <Form.Control type="number" placeholder="Digite o consumo de água no ano" />
-                                    </Form.Group>
-                                    <Link to="/home" className="btn btn-primary">Voltar</Link>
-                                </Form> */}
-                            {/* Formulario para filtrar o consumo de agua por um periodo de tempo */}
                             <Form onSubmit={handleWaterIntakeReportFormSubmit}>
                                 <Row className='d-flex align-items-end'>
                                     <Col lg={2}>
                                         <Form.Group>
                                             <Form.Label>De: </Form.Label>
-                                            <Form.Control type="date" name='initial_date' defaultValue={initialDate} onChange={(event) => setInitialDate(event.target.value)} onClick={(event) => setInitialDate(event.target.value)} />
+                                            <Form.Control type="date" name='initial_date' defaultValue={initialDate} onChange={(event) => setInitialDate(event.target.value)} />
                                         </Form.Group>
                                     </Col>
                                     <Col lg={2}>
                                         <Form.Group>
                                             <Form.Label>Até: </Form.Label>
-                                            <Form.Control type="date" name='final_date' defaultValue={finalDate} onChange={(event) => setFinalDate(event.target.value)} onClick={(event) => setFinalDate(event.target.value)} />
+                                            <Form.Control type="date" name='final_date' defaultValue={finalDate} onChange={(event) => setFinalDate(event.target.value)} />
                                         </Form.Group>
                                     </Col>
                                     <Col lg={4}>
@@ -110,6 +90,8 @@ export default function WaterIntakeReport() {
                                         <Form.Group>
                                             <Form.Label>Registros por página: </Form.Label>
                                             <Form.Select name='per_page' defaultValue={perPage} onChange={(event) => setPerPage(event.target.value)}>
+                                                <option value="2">2</option>
+                                                <option value="5">5</option>
                                                 <option value="10">10</option>
                                                 <option value="20">20</option>
                                                 <option value="30">30</option>
@@ -129,12 +111,12 @@ export default function WaterIntakeReport() {
                             </Form>
                             <Row className='mt-5'>
                                 <Col>
-                                    <table className="table table-hover">
+                                    <Table>
                                         <thead>
                                             <tr>
-                                                <th scope="col" className='text-center'>Data</th>
-                                                <th scope="col" className='text-center'>Quantidade</th>
-                                                <th scope="col" className='text-center'>Ações</th>
+                                                <th scope="col" className='text-center col-lg-3 col-md-5'>Data</th>
+                                                <th scope="col" className='text-center col-lg-3 col-md-5'>Quantidade</th>
+                                                <th scope="col" className='text-end'>Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -143,8 +125,8 @@ export default function WaterIntakeReport() {
                                                     <tr key={index}>
                                                         <td className='text-center'>{new Date(waterIntake.created_at).toLocaleString('pt-BR')}</td>
                                                         <td className='text-center'>{waterIntake.amount} ml</td>
-                                                        <td className='text-center'>
-                                                            <Button variant="danger" size={'sm'} onClick={() => handleDeleteButtonClick(waterIntake.id)}>
+                                                        <td className='text-end'>
+                                                            <Button variant="danger" size={'sm'} onClick={(e) => handleDeleteButtonClick(waterIntake.id,e)}>
                                                                 <FontAwesomeIcon icon={['fa', 'trash']} />
                                                             </Button>
                                                         </td>
@@ -158,16 +140,19 @@ export default function WaterIntakeReport() {
                                                 </tr>
                                             )}
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td colSpan="2" className='text-center'>
-                                                    <ReportsPagination paginationData={paginationData} paginationClicked={paginationClicked} />
-                                                </td>
-                                                <td colSpan="2" className='text-center'>Total</td>
-                                                <td className='text-center'>{totalAmount} ml</td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                        {waterIntakes.length > 0 ? (
+                                            <tfoot>
+                                                <tr>
+                                                    <td colSpan={3} className='text-end'><b>Total ingerido no período: </b> {totalAmount} ml</td>
+                                                </tr>
+                                            </tfoot>
+                                        ) : null}
+                                    </Table>
+                                    <Row>
+                                        <Col className='text-center'>
+                                            <Pagination changePage={paginationClicked} data={paginationData} requestParams={params} />
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Row>
                         </Card.Body>

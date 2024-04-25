@@ -10,7 +10,7 @@ const apiPrivate = (token) => {
 
 async function getWaterIntakeReport(token, data) {
   apiPrivate(token);
-  const { initialDate, finalDate, amount, page, per_page } = data
+  const { initialDate, finalDate, amount, page, perPage } = data
 
   let queryString = '';
   if (initialDate !== null) {
@@ -28,9 +28,9 @@ async function getWaterIntakeReport(token, data) {
     queryString += queryString.length > 0 ? '&' : '?'
     queryString += `page=${page}`
   }
-  if (per_page > 0) {
+  if (perPage > 0) {
     queryString += queryString.length > 0 ? '&' : '?'
-    queryString += `per_page=${per_page}`
+    queryString += `per_page=${perPage}`
   }
 
   return await api.get('api/water-intakes'+queryString)

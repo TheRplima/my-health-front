@@ -19,7 +19,7 @@ export default function Login() {
 
     const handleSubmit = () => {
         login({ email, password, keepLoggedIn }).then(() => {
-            alert('Login efetuado com sucesso!');
+            console.log('Login efetuado com sucesso!');
         }).catch((error) => {
             alert(error);
         });
