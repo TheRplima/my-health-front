@@ -8,6 +8,34 @@ const apiPrivate = (token) => {
   return api
 }
 
+async function getWaterIntakeReport(token, data) {
+  apiPrivate(token);
+  const { initialDate, finalDate, amount, page, per_page } = data
+
+  let queryString = '';
+  if (initialDate !== null) {
+    queryString += `?initial_date=${initialDate}`
+  }
+  if (finalDate !== null) {
+    queryString += queryString.length > 0 ? '&' : '?'
+    queryString += `final_date=${finalDate}`
+  }
+  if (amount > 0) {
+    queryString += queryString.length > 0 ? '&' : '?'
+    queryString += `amount=${amount}`
+  }
+  if (page > 0) {
+    queryString += queryString.length > 0 ? '&' : '?'
+    queryString += `page=${page}`
+  }
+  if (per_page > 0) {
+    queryString += queryString.length > 0 ? '&' : '?'
+    queryString += `per_page=${per_page}`
+  }
+
+  return await api.get('api/water-intakes'+queryString)
+}
+
 async function getWaterIntake(token) {
   apiPrivate(token);
 
@@ -71,6 +99,12 @@ const useWaterIntakeData = () => {
 
   }
 
+  const handleGetWaterIntakeReport = (data) => {
+    const token = cookies.token
+
+    return getWaterIntakeReport(token,data)
+  }
+
   const [waterIntakeData] = useState(handleGetWaterIntake())
 
   const handleRegisterWaterIntake = async (amount) => {
@@ -95,6 +129,7 @@ const useWaterIntakeData = () => {
 
   return {
     getWaterIntakeData: handleGetWaterIntake,
+    getWaterIntakeReport: handleGetWaterIntakeReport,
     setWaterIntakeData: handleRegisterWaterIntake,
     deleteWaterIntake: handleDeleteWaterIntake,
     waterIntakeData

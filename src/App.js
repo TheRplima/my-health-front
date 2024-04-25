@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import UserProfile from './pages/UserProfile';
+import WaterIntakeReport from './pages/WaterIntakeReport';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
 
         <Route element={<ProtectRoutes />}>
           <Route path='/profile' element={<UserProfile />} />
+          <Route path='/water-intake-report' element={<WaterIntakeReport />} />
         </Route>
       </Routes>
     </>
