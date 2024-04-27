@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import useWaterIntakeData from '../services/useWaterIntakeData';
+import WaterIntakeChart from '../components/WaterIntakeChart';
 
 import FormControlWaterIntakeContainerSelect from '../components/FormControlWaterIntakeContainerSelect';
 import { Pagination } from 'react-laravel-paginex'
@@ -21,6 +22,7 @@ export default function WaterIntakeReport() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [waterIntakes, setWaterIntakes] = useState([]);
     const [paginationData, setPaginationData] = useState({});
+    const [waterIntakesChartData, setWaterIntakesChartData] = useState({});
     const { getWaterIntakeReport, deleteWaterIntake } = useWaterIntakeData()
     const [params, setParams] = useState({})
 
@@ -32,13 +34,14 @@ export default function WaterIntakeReport() {
             setWaterIntakes(response.data.water_intake_list.data);
             setTotalAmount(response.data.total_amount);
             setPaginationData(response.data.water_intake_list);
+            setWaterIntakesChartData(response.data.water_intake_chart);
         }).catch((error) => {
             console.log(error)
         });
     }
 
-    const paginationClicked = (data) => {
-        getWaterIntakeReport(data).then(response => {
+    const paginationClicked = async (data) => {
+        await getWaterIntakeReport(data).then(response => {
             setWaterIntakes(response.data.water_intake_list.data);
             setPaginationData(response.data.water_intake_list);
         }).catch((error) => {
@@ -46,7 +49,7 @@ export default function WaterIntakeReport() {
         });
     }
 
-    const handleDeleteButtonClick = (id,e) => {
+    const handleDeleteButtonClick = (id, e) => {
         confirm('Deseja realmente excluir este registro?', 'Remover registro', 'Sim', 'Não').then(
             (response) => {
                 if (response) {
@@ -109,6 +112,13 @@ export default function WaterIntakeReport() {
                                     </Col>
                                 </Row>
                             </Form>
+                            {waterIntakesChartData.length > 1 ? (
+                                <Row className='mt-5'>
+                                    <Col>
+                                        <WaterIntakeChart data={waterIntakesChartData} />
+                                    </Col>
+                                </Row>
+                            ) : ('')}
                             <Row className='mt-5'>
                                 <Col>
                                     <Table>
@@ -126,7 +136,7 @@ export default function WaterIntakeReport() {
                                                         <td className='text-center'>{new Date(waterIntake.created_at).toLocaleString('pt-BR')}</td>
                                                         <td className='text-center'>{waterIntake.amount} ml</td>
                                                         <td className='text-end'>
-                                                            <Button variant="danger" size={'sm'} onClick={(e) => handleDeleteButtonClick(waterIntake.id,e)}>
+                                                            <Button variant="danger" size={'sm'} onClick={(e) => handleDeleteButtonClick(waterIntake.id, e)}>
                                                                 <FontAwesomeIcon icon={['fa', 'trash']} />
                                                             </Button>
                                                         </td>

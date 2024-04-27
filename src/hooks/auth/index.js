@@ -57,7 +57,7 @@ export const UserProvider = ({ children }) => {
     const refreshUser = async () => {
         apiPrivate();
 
-        return api.post('api/refresh').then(response => {
+        return await api.post('api/refresh').then(response => {
             if (checkToken(response.data.authorisation.token) === false) {
                 alert('Token expirado, faça login novamente');
                 logout();
