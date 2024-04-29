@@ -30,15 +30,15 @@ export const UserProvider = ({ children }) => {
                 setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7, secure: false });
                 setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7, secure: false });
                 setCookies('keepLoggedIn', true, { maxAge: 60 * 60 * 24 * 7, secure: false });
-            }else {
-                setCookies('token', response.data.authorisation.token, {secure: false});
-                setCookies('user', JSON.stringify(response.data.user), {secure: false});
-                setCookies('keepLoggedIn', false, {secure: false});
+            } else {
+                setCookies('token', response.data.authorisation.token, { secure: false });
+                setCookies('user', JSON.stringify(response.data.user), { secure: false });
+                setCookies('keepLoggedIn', false, { secure: false });
             }
 
             //if on mobile use window.location
-            window.location.href = process.env.REACT_APP_HOME_PAGE;
-            
+            navigate(process.env.REACT_APP_HOME_PAGE);
+
         }).catch(error => {
             console.log(error);
             alert('Erro ao realizar login: ' + error.response.data.message);
@@ -48,7 +48,7 @@ export const UserProvider = ({ children }) => {
     const logout = (force = false) => {
         if (cookies.keepLoggedIn === true && force === false) {
             ['water_intakes', 'weight_controls', 'water_intake_containers'].forEach(obj => removeCookie(obj));
-        }else{
+        } else {
             ['token', 'user', 'water_intakes', 'weight_controls', 'water_intake_containers', 'keepLoggedIn'].forEach(obj => removeCookie(obj));
         }
         navigate('/login');
@@ -67,7 +67,7 @@ export const UserProvider = ({ children }) => {
             if (keepLoggedIn) {
                 setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7 });
                 setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7 });
-            }else {
+            } else {
                 setCookies('token', response.data.authorisation.token);
                 setCookies('user', JSON.stringify(response.data.user));
             }

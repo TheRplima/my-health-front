@@ -2,14 +2,13 @@ import React from "react";
 import { Chart } from "react-google-charts";
 
 export const options = {
-  title: "Consumo de água no período",
-  vAxis: { title: "Qtde (ml)" },
+  title: "Variação do peso corporal ao longo do ano",
+  vAxis: { title: "peso" },
   hAxis: { title: "Dia" },
-  seriesType: "bars",
-  series: { 1: { type: "line" } },
+  seriesType: "line",
 };
 
-const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle }) => {
+const WeightControlChart = ({ data, title, vAxisTitle, hAxisTitle }) => {
   options.title = title ? title : options.title;
   options.vAxis.title = vAxisTitle ? vAxisTitle : options.vAxis.title;
   options.hAxis.title = hAxisTitle ? hAxisTitle : options.hAxis.title;
@@ -24,4 +23,4 @@ const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle }) => {
   )
 }
 
-export default WaterIntakeChart
+export default WeightControlChart

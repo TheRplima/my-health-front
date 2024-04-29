@@ -4,20 +4,16 @@ import useUserProfileData from "../services/useUserProfileData";
 import { useAuth } from "../hooks/auth";
 import Utils from '../hooks/utils'
 
-import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Spinner from 'react-bootstrap/Spinner';
-import Button from 'react-bootstrap/Button';
+import { Col, Form, Row, Card, ListGroup, Spinner, Button } from 'react-bootstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { Col, Form, Row } from 'react-bootstrap';
 
-const CardProfilePhoto = () => {
+const CardProfileInfo = () => {
     const { formatPhoneNumber, getActivityLevel } = Utils()
     const { cookies } = useAuth();
-    const { updateUserProfile, getUserProfileData } = useUserProfileData();
+    const { updateUserProfile } = useUserProfileData();
 
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,31 +22,27 @@ const CardProfilePhoto = () => {
 
     library.add(fas);
 
-    const handleEditProfile = () => {
-        setEditing(true)
-    }
+    const handleEditProfile = () => setEditing(true);
 
-    const handleEditProfileCancelBtn = () => {
-        setEditing(false)
-    }
+    const handleEditProfileCancelBtn = () => setEditing(false);
 
     const handleChange = async (event) => {
         const base64 = await convertBase64(event.target.files[0])
         setFile(base64)
-      }
+    }
 
-      const convertBase64 = (file) => {
+    const convertBase64 = (file) => {
         return new Promise((resolve, reject) => {
-          const fileReader = new FileReader();
-          fileReader.readAsDataURL(file)
-          fileReader.onload = () => {
-            resolve(fileReader.result);
-          }
-          fileReader.onerror = (error) => {
-            reject(error);
-          }
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            }
+            fileReader.onerror = (error) => {
+                reject(error);
+            }
         })
-      }
+    }
 
     const handleEditProfileFormSubmit = (e) => {
         e.preventDefault()
@@ -89,15 +81,6 @@ const CardProfilePhoto = () => {
                             <FontAwesomeIcon icon={['fa', 'pen']} />
                         </Button>
                     </Card.Header>
-                    {!editing ? (
-                        <Card.Img className="m-auto p-5 rounded-circle" variant="top" src={
-                            user.image ? (
-                                process.env.REACT_APP_API_BASE_URL + 'storage/' + user.image
-                            ) : (
-                                user.gender === 'M' ? 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp' : 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava2.webp'
-                            )
-                        } />
-                    ) : ('')}
                     <Card.Body>
                         {!editing ? (
                             <ListGroup variant="flush">
@@ -194,4 +177,4 @@ const CardProfilePhoto = () => {
     )
 }
 
-export default CardProfilePhoto
+export default CardProfileInfo

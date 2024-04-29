@@ -22,7 +22,7 @@ async function getWeightControl(token, max = 0, initial_date = null, final_date 
     queryString += `max=${max}`
   }
   apiPrivate(token);
-  return api.get('api/weight-control'+queryString).then(response => {
+  return api.get('api/weight-control' + queryString).then(response => {
     return response.data
   }).catch(error => {
     console.log('Error', error.message);
@@ -32,7 +32,7 @@ async function getWeightControl(token, max = 0, initial_date = null, final_date 
 async function registerWeightControl(date, weight, token) {
   apiPrivate(token);
 
-  return api.post('api/weight-control',{date, weight}).then(response => {
+  return api.post('api/weight-control', { date, weight }).then(response => {
     return response.data
   }).catch(error => {
     console.log('Error', error.message);
@@ -74,6 +74,12 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
 
   }
 
+  const handleGetWeightControlReport = (data) => {
+    const token = cookies.token
+    const max = 0;
+    return getWeightControl(token, max, initial_date, final_date)
+  }
+
   const [weightControlData] = useState(handleGetWeightControl(false, max, initial_date, final_date))
 
   const handleRegisterWeightControl = async (date, weight) => {
@@ -100,6 +106,7 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
 
   return {
     getWeightControlData: handleGetWeightControl,
+    getWeightControlReport: handleGetWeightControlReport,
     setWeightControlData: handleRegisterWeightControl,
     deleteWeightControl: handleDeleteWeightControl,
     weightControlData
