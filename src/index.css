@@ -10,7 +10,7 @@
 
 .main {
   display: flex;
-  height: 91.5vh;
+  height: 89vh;
   padding-top: 15px;
   justify-content: flex-start;
   background-color: #424246;
@@ -20,14 +20,16 @@
 
 .home,
 .profile,
-.login {
+.login,
+.water-intake-report {
   transition: 850ms;
   width: 100%;
 }
 
 .main.sidebar-active .home,
 .main.sidebar-active .profile,
-.main.sidebar-active .login {
+.main.sidebar-active .login,
+.main.sidebar-active .water-intake-report {
   margin-left: 250px;
 }
 
@@ -42,7 +44,7 @@
 
 .menu-bars {
   margin-right: 2rem;
-  font-size: 2rem;
+  font-size: 1.3rem;
   background: none;
   color: #fff;
 }
@@ -77,12 +79,11 @@
 }
 
 .nav-text {
-  display: flex;
   justify-content: flex-start;
   align-items: center;
   padding: 8px 0px 8px 12px;
   list-style: none;
-  height: 60px;
+  height: 50px;
 }
 
 .nav-text a {
@@ -101,6 +102,29 @@
 .nav-text a.active {
   background-color: #424246;
   color: #fff;
+}
+
+.nav-menu ul li ul {
+  display: none;
+  background: #3a5899;
+  padding-bottom: 7px;
+  border: 1px solid #efefef;
+  border-radius: 10px;
+}
+
+.nav-menu ul li ul li {
+  padding: 10px 0px 4px 10px;
+  width: 220px;
+}
+
+.nav-menu ul li ul li a {
+  font-size: 16px;
+}
+
+.nav-text a.active+ul {
+  display: block;
+  position: absolute;
+  z-index: 1;
 }
 
 .nav-menu-items {

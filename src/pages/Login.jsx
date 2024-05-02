@@ -48,12 +48,20 @@ export default function Login() {
                                 <Form>
                                     <Form.Group className="mb-3" controlId="loginFormEmail">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control required type="email" onChange={(e) => setEmail(e.target.value)} />
+                                        <Form.Control required type="email" onChange={(e) => setEmail(e.target.value)} onKeyPress={event => {
+                                            if (event.key === "Enter") {
+                                                handleSubmit();
+                                            }
+                                        }} />
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="loginFormPassword">
                                         <Form.Label>Senha</Form.Label>
-                                        <Form.Control required type="password" minLength={6} onChange={(e) => setPassword(e.target.value)} />
+                                        <Form.Control required type="password" minLength={6} onChange={(e) => setPassword(e.target.value)} onKeyPress={event => {
+                                            if (event.key === "Enter") {
+                                                handleSubmit();
+                                            }
+                                        }} />
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="keepLogggedIn">

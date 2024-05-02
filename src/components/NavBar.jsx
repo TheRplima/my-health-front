@@ -23,7 +23,14 @@ function Navbar(props) {
 
     const user = cookies.user;
     const token = cookies.token;
-    console.log()
+
+    const handleClickMenuDropdown = (e) => {
+        e.preventDefault();
+        const parent = e.target.parentElement;
+        const subNav = parent.querySelector('ul');
+        parent.classList.toggle('active');
+    }
+
     return (
         <>
             <IconContext.Provider value={{ color: "undefined" }}>
@@ -51,15 +58,35 @@ function Navbar(props) {
                             </li>
                         ) : (null)}
                         {SidebarData.map((item, index) => {
-                            return (
-                                (item.private && token) || (!item.private) ?
-                                    (<li key={index} className={item.cName}>
+                            return ((item.private && token) || (!item.private) ?
+                                (item.subNav ? (
+                                    <li key={index} className={item.cName}>
+                                        <Link className={props.pathname === item.path ? 'active' : null} onClick={handleClickMenuDropdown}>
+                                            {item.icon}
+                                            <span>{item.title}</span>
+                                        </Link>
+                                        <ul>
+                                            {item.subNav.map((subItem, index) => {
+                                                return (
+                                                    <li key={index} className={subItem.cName}>
+                                                        <Link to={subItem.path} className={props.pathname === subItem.path ? 'active' : null}>
+                                                            {subItem.icon}
+                                                            <span>{subItem.title}</span>
+                                                        </Link>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </li>
+                                ) : (
+                                    <li key={index} className={item.cName}>
                                         <Link to={item.path} className={props.pathname === item.path ? 'active' : null}>
                                             {item.icon}
                                             <span>{item.title}</span>
                                         </Link>
-                                    </li>) : (null)
-                            );
+                                    </li>
+                                )
+                                ) : (null));
                         })}
                         {token ? (
                             <li className="nav-text">

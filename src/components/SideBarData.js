@@ -19,11 +19,27 @@ export const SidebarData = [
         private: true
     },
     {
-        title: 'Products',
-        path: '/products',
+        title: 'Relatórios',
+        path: null,
         icon: <FaIcons.FaCartPlus />,
         cName: 'nav-text',
-        private: true
+        private: true,
+        subNav: [
+            {
+                title: 'Consumo de água',
+                path: '/water-intake-report',
+                icon: <IoIcons.IoIosPaper />,
+                cName: 'nav-text',
+                private: true
+            },
+            {
+                title: 'Controle de peso',
+                path: '/weight-control-report',
+                icon: <IoIcons.IoIosPaper />,
+                cName: 'nav-text',
+                private: true
+            }
+        ]
     },
     {
         title: 'Team',

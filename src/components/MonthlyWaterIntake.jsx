@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import useWaterIntakeData from '../services/useWaterIntakeData';
 import WaterIntakeChart from './WaterIntakeChart';
-import { useAuth } from "../hooks/auth";
+import Utils from '../hooks/utils';
 
 export default function MonthlyWaterIntake() {
-    const { cookies } = useAuth();
-    const { getWaterIntakeReport } = useWaterIntakeData()
+    const { getStartOfWeek, getEndOfWeek, getWeek } = Utils();
+    const { getWaterIntakeReport } = useWaterIntakeData();
     const [waterIntakesChartData, setWaterIntakesChartData] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    Date.prototype.getWeek = function () {
-        var onejan = new Date(this.getFullYear(), 0, 1);
-        var today = new Date(this.getFullYear(), this.getMonth(), this.getDate());
-        var dayOfYear = ((today - onejan + 86400000) / 86400000);
-        return Math.ceil(dayOfYear / 7)
-    };
 
     useEffect(() => {
         async function loadStorageData() {
@@ -30,15 +22,14 @@ export default function MonthlyWaterIntake() {
                     if (index !== 0) {
                         const [DD, MM, YYYY] = curr[0].split('/');
                         const date = new Date(`${YYYY}-${MM}-${DD}`);
-                        var primeiro = date.getDate() - date.getDay();
-                        let primeiroDia = new Date(date.setDate(primeiro)).toLocaleDateString('pt-BR');
-                        let ultimoDia = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString('pt-BR');
-                        const week = date.getWeek();
+                        let initialDate = getStartOfWeek(date).toLocaleDateString('pt-BR');
+                        let finalDate = getEndOfWeek(date).toLocaleDateString('pt-BR');
+                        const week = getWeek(date);
                         if (!acc[week]) {
                             acc[week] = {
                                 week: week,
-                                start: primeiroDia,
-                                end: ultimoDia,
+                                start: initialDate,
+                                end: finalDate,
                                 total: 0,
                                 wanted: curr[2] * 7
                             };
@@ -62,7 +53,6 @@ export default function MonthlyWaterIntake() {
                 });
 
                 setWaterIntakesChartData(fetchWaterIntakeData);
-                setLoading(false);
             }).catch((error) => {
                 console.log(error.message)
             });
@@ -72,7 +62,6 @@ export default function MonthlyWaterIntake() {
 
         return () => {
             setWaterIntakesChartData({});
-            setLoading(true);
         }
     }, []);
 
@@ -80,7 +69,7 @@ export default function MonthlyWaterIntake() {
         <>
             {
                 waterIntakesChartData.length > 1 ? (
-                    <WaterIntakeChart data={waterIntakesChartData} title={'Consumo de água no mês'} hAxisTitle={'Semana'} />
+                    <WaterIntakeChart key={'monthly'} data={waterIntakesChartData} title={'Consumo de água no mês'} hAxisTitle={'Semana'} />
                 ) : ('')
             }
         </>

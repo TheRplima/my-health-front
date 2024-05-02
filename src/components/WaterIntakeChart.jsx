@@ -10,6 +10,7 @@ export const options = {
 };
 
 const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle }) => {
+  console.log(title)
   options.title = title ? title : options.title;
   options.vAxis.title = vAxisTitle ? vAxisTitle : options.vAxis.title;
   options.hAxis.title = hAxisTitle ? hAxisTitle : options.hAxis.title;

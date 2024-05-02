@@ -4,7 +4,7 @@ const Utils = () => {
         if (!input) return input;
         const numberInput = input.replace(/[^\d]/g, "");
         const numberInputLength = numberInput.length;
-    
+
         if (numberInputLength < 4) {
             return numberInput;
         } else if (numberInputLength < 7) {
@@ -33,9 +33,39 @@ const Utils = () => {
         }
     }
 
+    function getStartOfWeek(date) {
+
+        // Copy date if provided, or use current date if not
+        date = date ? new Date(+date) : new Date();
+        date.setHours(0, 0, 0, 0);
+
+        // Set date to previous Sunday
+        date.setDate(date.getDate() - date.getDay());
+
+        return date;
+    }
+
+    function getEndOfWeek(date) {
+        date = getStartOfWeek(date);
+        date.setDate(date.getDate() + 6);
+
+        return date;
+    }
+
+    function getWeek(date) {
+        var onejan = new Date(date.getFullYear(), 0, 1);
+        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var dayOfYear = ((today - onejan + 86400000) / 86400000);
+
+        return Math.ceil(dayOfYear / 7)
+    };
+
     return {
         formatPhoneNumber: formatPhoneNumber,
-        getActivityLevel: getActivityLevel
+        getActivityLevel: getActivityLevel,
+        getStartOfWeek: getStartOfWeek,
+        getEndOfWeek: getEndOfWeek,
+        getWeek: getWeek
     }
 }
 export default Utils
