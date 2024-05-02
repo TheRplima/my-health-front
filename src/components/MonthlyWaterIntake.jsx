@@ -22,8 +22,13 @@ export default function MonthlyWaterIntake() {
                     if (index !== 0) {
                         const [DD, MM, YYYY] = curr[0].split('/');
                         const date = new Date(`${YYYY}-${MM}-${DD}`);
-                        let initialDate = getStartOfWeek(date).toLocaleDateString('pt-BR');
-                        let finalDate = getEndOfWeek(date).toLocaleDateString('pt-BR');
+                        const today = new Date();
+                        var initialDateMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        var finalDateMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                        let initialDate = getStartOfWeek(date);
+                        let finalDate = getEndOfWeek(date);
+                        initialDate = (initialDate < initialDateMonth ? initialDateMonth : initialDate).toLocaleDateString('pt-BR');
+                        finalDate = (finalDate > finalDateMonth ? finalDateMonth : finalDate).toLocaleDateString('pt-BR');
                         const week = getWeek(date);
                         if (!acc[week]) {
                             acc[week] = {
