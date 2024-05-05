@@ -11,24 +11,24 @@ export default function Dashboard() {
     return (
         <div className='home'>
             <Container>
-                <Row className='mb-3'>
-                    <Col>
+                <Row>
+                    <Col className='mb-3'>
                         <WeeklyWaterIntake />
                     </Col>
-                    <Col>
+                    <Col className='mb-3'>
                         <MonthlyWaterIntake />
                     </Col>
                 </Row>
-                <Row className='mb-3'>
-                    <Col>
+                <Row>
+                    <Col className='mb-3'>
                         <BodyWeightVariationGraph />
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
+                    <Col className='mb-3'>
                         <CardConsumoAguaHoje />
                     </Col>
-                    <Col>
+                    <Col className='mb-3'>
                         <CardControlePeso />
                     </Col>
                 </Row>
