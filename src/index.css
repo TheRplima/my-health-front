@@ -10,7 +10,7 @@
 
 .main {
   display: flex;
-  height: 89vh;
+  height: calc(100vh - 80px);
   padding-top: 15px;
   justify-content: flex-start;
   background-color: #424246;
