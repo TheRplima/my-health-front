@@ -1,44 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import useWaterIntakeData from '../services/useWaterIntakeData';
 import WaterIntakeChart from './WaterIntakeChart';
-import Utils from '../hooks/utils';
+import { useAuth } from "../hooks/auth";
 
 export default function WeeklyWaterIntake() {
-    const { getStartOfWeek, getEndOfWeek, getWeek } = Utils()
-    const { getWaterIntakeReport } = useWaterIntakeData()
-    const [waterIntakesChartData, setWaterIntakesChartData] = useState({});
+    const { cookies } = useAuth();
+    const { getWeeklyWaterIntakeChartData } = useWaterIntakeData()
+    const [waterIntakesChartData, setWaterIntakesChartData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function loadStorageData() {
-            const date = new Date();
-            let initialDate = getStartOfWeek(date).toISOString().split('T')[0];
-            let finalDate = getEndOfWeek(date).toISOString().split('T')[0];
-            var amount = 0;
-            var page = 0;
-            var perPage = 10000;
-            await getWaterIntakeReport({ initialDate, finalDate, amount, page, perPage }).then(response => {
-                const waterIntakeChart = response.data.water_intake_chart
-
-                setWaterIntakesChartData(waterIntakeChart);
+            await getWeeklyWaterIntakeChartData().then(response => {
+                setWaterIntakesChartData(response);
+                setLoading(false);
             }).catch((error) => {
                 console.log(error.message)
             });
         }
 
-        loadStorageData();
+        if (!loading) {
+            if (cookies.weekly_water_intake_chart) {
+                const wwic = cookies.weekly_water_intake_chart;
+                if (wwic.length === 1) {
+                    wwic.push([new Date().toISOString().split('T')[0], 0, cookies.user.daily_water_amount])
+                }
+                setLoading(true);
+                setWaterIntakesChartData(cookies.weekly_water_intake_chart);
+                setLoading(false);
+            } else {
+                setLoading(true);
+                loadStorageData();
+            }
+        }
 
         return () => {
             setWaterIntakesChartData({});
+            setLoading(false);
         }
-    }, []);
+    }, [cookies]);
 
-    return (
-        <>
-            {
-                waterIntakesChartData.length > 1 ? (
-                    <WaterIntakeChart key={'weekly'} data={waterIntakesChartData} title={'Consumo de água na semana'} hAxisTitle={'Dia'} />
-                ) : ('')
-            }
-        </>
-    )
+    return (<WaterIntakeChart chartId={'weekly'} data={waterIntakesChartData} title={'Consumo de água na semana'} hAxisTitle={'Dia'} />)
 }

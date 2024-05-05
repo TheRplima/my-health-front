@@ -5,47 +5,36 @@ import { useAuth } from "../hooks/auth";
 
 export default function BodyWeightVariationGraph() {
     const { cookies } = useAuth();
-    const { getWeightControlReport } = useWeightControlData()
-    const [weightControlsChartData, setWeightControlsChartData] = useState({});
-    const [loading, setLoading] = useState(true);
+    const { getBobyWeightVariationChartData } = useWeightControlData()
+    const [weightControlsChartData, setWeightControlsChartData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function loadStorageData() {
-            const ano = new Date().getFullYear();
-            let initial_date = ano + '-01-01';
-            let final_date = ano + '-12-31';
-            let max = 0;
-            let refresh = true;
-            await getWeightControlReport(refresh, max, initial_date, final_date).then((response) => {
-                const weightControlReportData = response.weight_control_list;
-                let fetchWaterIntakeData = [
-                    ['Dia', 'Peso Corporal']
-                ];
-                weightControlReportData.forEach((element) => {
-                    fetchWaterIntakeData.push([new Date(element.created_at).toLocaleDateString('pt-BR'), element.weight])
-                });
-                setWeightControlsChartData(fetchWaterIntakeData)
-            })
-                .catch((error) => {
-                    console.log(error.message)
-                });
+            await getBobyWeightVariationChartData().then((response) => {
+                setWeightControlsChartData(response);
+                setLoading(false);
+            }).catch((error) => {
+                console.log(error.message)
+            });
         }
 
-        loadStorageData();
+        if (!loading) {
+            if (cookies.weight_control_variation_chart) {
+                setLoading(true);
+                setWeightControlsChartData(cookies.weight_control_variation_chart);
+                setLoading(false);
+            } else {
+                setLoading(true);
+                loadStorageData();
+            }
+        }
 
         return () => {
             setWeightControlsChartData({});
-            setLoading(true);
+            setLoading(false);
         }
-    }, []);
+    }, [cookies]);
 
-    return (
-        <>
-            {
-                weightControlsChartData.length > 1 ? (
-                    <WeightControlChart data={weightControlsChartData} title={'Variação do peso corporal ao longo do ano'} hAxisTitle={'Dia'} />
-                ) : ('')
-            }
-        </>
-    )
+    return (<WeightControlChart chartId={'weight-contnrol-variation'} data={weightControlsChartData} title={'Variação do peso corporal ao longo do ano'} hAxisTitle={'Dia'} />)
 }

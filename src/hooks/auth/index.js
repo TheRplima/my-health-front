@@ -26,15 +26,9 @@ export const UserProvider = ({ children }) => {
                 return;
             }
 
-            if (keepLoggedIn) {
-                setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7, secure: false });
-                setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7, secure: false });
-                setCookies('keepLoggedIn', true, { maxAge: 60 * 60 * 24 * 7, secure: false });
-            } else {
-                setCookies('token', response.data.authorisation.token, { secure: false });
-                setCookies('user', JSON.stringify(response.data.user), { secure: false });
-                setCookies('keepLoggedIn', false, { secure: false });
-            }
+            setCookies('token', response.data.authorisation.token, { secure: false });
+            setCookies('user', JSON.stringify(response.data.user), { secure: false });
+            setCookies('keepLoggedIn', keepLoggedIn, { secure: false });
 
             //if on mobile use window.location
             navigate(process.env.REACT_APP_HOME_PAGE);
@@ -47,33 +41,30 @@ export const UserProvider = ({ children }) => {
 
     const logout = (force = false) => {
         if (cookies.keepLoggedIn === true && force === false) {
-            ['water_intakes', 'weight_controls', 'water_intake_containers'].forEach(obj => removeCookie(obj));
+            ['water_intakes', 'weight_controls', 'water_intake_containers', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'].forEach(obj => removeCookie(obj));
         } else {
-            ['token', 'user', 'water_intakes', 'weight_controls', 'water_intake_containers', 'keepLoggedIn'].forEach(obj => removeCookie(obj));
+            ['token', 'user', 'water_intakes', 'weight_controls', 'water_intake_containers', 'keepLoggedIn', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'].forEach(obj => removeCookie(obj));
         }
         navigate('/login');
     };
 
     const refreshUser = async () => {
         apiPrivate();
-
-        return await api.post('api/refresh').then(response => {
-            if (checkToken(response.data.authorisation.token) === false) {
-                alert('Token expirado, faça login novamente');
-                logout();
-                return;
-            }
-            const keepLoggedIn = cookies.keepLoggedIn;
-            if (keepLoggedIn) {
-                setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7 });
-                setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7 });
-            } else {
-                setCookies('token', response.data.authorisation.token);
-                setCookies('user', JSON.stringify(response.data.user));
-            }
-        }).catch(error => {
-            console.log('Error', error.message);
-        });
+        const decodedJwt = parseJwt(cookies?.token);
+        console.log(new Date(decodedJwt.exp * 1000));
+        if (decodedJwt.exp * 1000 - Date.now() < 30000) {
+            return await api.post('api/refresh').then(response => {
+                if (checkToken(response.data.authorisation.token) === false) {
+                    alert('Token expirado, faça login novamente');
+                    logout();
+                    return;
+                }
+                setCookies('token', response.data.authorisation.token, { secure: false });
+                setCookies('user', JSON.stringify(response.data.user), { secure: false });
+            }).catch(error => {
+                console.log('Error', error.message);
+            });
+        }
     }
 
     const parseJwt = (token) => {
@@ -89,12 +80,14 @@ export const UserProvider = ({ children }) => {
         if (decodedJwt.exp * 1000 < Date.now()) {
             return false;
         }
+        setCookies('token_exp', decodedJwt.exp * 1000, { secure: false });
         return true;
     }
 
     const value = useMemo(
         () => ({
             cookies,
+            setCookies,
             login,
             logout,
             refreshUser,

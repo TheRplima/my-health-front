@@ -88,6 +88,7 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
     registerWeightControl(date, weight, token).then(data => {
       handleGetWeightControl(true, max, initial_date, final_date)
       getUserProfileData(true);
+      getBobyWeightVariationChartData();
     }).catch((error) => {
       console.log('Error', error.message);
     });
@@ -99,9 +100,32 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
     deleteWeightControl(id, token).then(data => {
       handleGetWeightControl(true, max, initial_date, final_date)
       getUserProfileData(true);
+      getBobyWeightVariationChartData();
     }).catch((error) => {
       console.log('Error', error.message);
     });
+  }
+
+  const getBobyWeightVariationChartData = async () => {
+    const ano = new Date().getFullYear();
+    let initial_date = ano + '-01-01';
+    let final_date = ano + '-12-31';
+    let max = 0;
+    let refresh = true;
+    await handleGetWeightControlReport(refresh, max, initial_date, final_date).then((response) => {
+      const weightControlReportData = response.weight_control_list;
+      let fetchWeightControlVariationData = [
+        ['Dia', 'Peso Corporal']
+      ];
+      weightControlReportData.forEach((element) => {
+        fetchWeightControlVariationData.push([new Date(element.created_at).toLocaleDateString('pt-BR'), element.weight])
+      });
+      setCookies('weight_control_variation_chart', JSON.stringify(fetchWeightControlVariationData));
+      return fetchWeightControlVariationData;
+    })
+      .catch((error) => {
+        console.log(error.message)
+      });
   }
 
   return {
@@ -109,6 +133,7 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
     getWeightControlReport: handleGetWeightControlReport,
     setWeightControlData: handleRegisterWeightControl,
     deleteWeightControl: handleDeleteWeightControl,
+    getBobyWeightVariationChartData: getBobyWeightVariationChartData,
     weightControlData
   }
 }

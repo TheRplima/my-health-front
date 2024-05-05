@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
-export default function WaterIntakeReport() {
+export default function WeightControlReport() {
     library.add(fas);
     const [amount, setAmount] = useState(0);
     const [initialDate, setInitialDate] = useState(new Date().toISOString().split('T')[0]);
@@ -67,7 +67,7 @@ export default function WaterIntakeReport() {
             <Container>
                 <Card>
                     <Card.Body>
-                        <Card.Title>Relatório de consumo de água</Card.Title>
+                        <Card.Title>Relatório de variação de peso</Card.Title>
                         <Form onSubmit={handleWaterIntakeReportFormSubmit}>
                             <Row className='d-flex align-items-end'>
                                 <Col lg={2}>
