@@ -1,8 +1,13 @@
+import React, { useEffect } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 
 export const ProtectRoutes = () => {
-    const { cookies } = useAuth();
+    const { cookies, refreshUser } = useAuth();
 
-    return cookies.token ? <Outlet/> : <Navigate to='/login' exact />
+    useEffect(() => {
+        refreshUser();
+    }, [refreshUser]);
+
+    return cookies.token ? <Outlet /> : <Navigate to='/login' exact />
 };
