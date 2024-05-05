@@ -41,7 +41,6 @@ const Utils = () => {
 
         // Set date to previous Sunday
         date.setDate(date.getDate() - date.getDay());
-
         return date;
     }
 
@@ -53,19 +52,30 @@ const Utils = () => {
     }
 
     function getWeek(date) {
-        var onejan = new Date(date.getFullYear(), 0, 1);
-        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        var dayOfYear = ((today - onejan + 86400000) / 86400000);
+        date = getStartOfWeek(date);
+        const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+        const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    }
 
-        return Math.ceil(dayOfYear / 7)
-    };
+    // return number of days between two dates
+    function dateDiffInDays(a, b) {
+        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        // Discard the time and time-zone information.
+        const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+        const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+        return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+    }
 
     return {
         formatPhoneNumber: formatPhoneNumber,
         getActivityLevel: getActivityLevel,
         getStartOfWeek: getStartOfWeek,
         getEndOfWeek: getEndOfWeek,
-        getWeek: getWeek
+        getWeek: getWeek,
+        dateDiffInDays: dateDiffInDays
     }
 }
 export default Utils
