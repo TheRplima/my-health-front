@@ -4,11 +4,11 @@ import { ProtectRoutes } from './hooks/protectRoutes';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
-import Profile from './pages/Profile';
 import WaterIntakeReport from './pages/WaterIntakeReport';
 
 import NavBar from './components/NavBar';
 import Dashboard from './pages/Dashboard';
+import WeightControlReport from './pages/WeightControlReport';
 
 export default function App() {
   const [sidebar, setSidebar] = useState(true);
@@ -31,6 +31,7 @@ export default function App() {
             <Route element={<ProtectRoutes />}>
               <Route path='/profile' element={<Dashboard />} />
               <Route path='/water-intake-report' element={<WaterIntakeReport />} />
+              <Route path='/weight-control-report' element={<WeightControlReport />} />
             </Route>
           </Routes>
         </div>
