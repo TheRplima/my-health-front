@@ -23,33 +23,33 @@ const WeightControlChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) =>
     <>
       {data !== undefined && data.length > 0 ? (
         <Card>
-          <Card.Body>
-            <div id={'chart_' + chartId} className={'d-flex align-items-center justify-content-center text-center'}>
-              <Chart
-                chartType="ComboChart"
-                rootProps={{ "data-testid": chartId }}
-                width={"100%"}
-                height={"100%"}
-                loader={
-                  <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </Spinner>
-                }
-                data={data}
-                options={options}
-              />
-            </div>
+          <Card.Body id={'chart_' + chartId} className={'d-flex align-items-center justify-content-center text-center'}>
+            <Chart
+              chartType="ComboChart"
+              rootProps={{ "data-testid": chartId }}
+              width={"100%"}
+              height={"100%"}
+              loader={
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              }
+              data={data}
+              options={options}
+            />
           </Card.Body>
         </Card>
       ) : (
         <Card className="mb-3 h-100">
           <Card.Body>
             <table className='table table-striped table-hover'>
-              <tr>
-                <td colSpan="3" className='text-center'>
-                  <Card.Text>Nenhum registro encontrado</Card.Text>
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td colSpan="3" className='text-center'>
+                    <Card.Text>Nenhum registro encontrado</Card.Text>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </Card.Body>
         </Card>
