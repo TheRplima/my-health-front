@@ -1,80 +1,194 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 40px;
-  color: #41414d;
-  font-size: 18px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Lato", sans-serif;
 }
 
-.back-link svg {
-  margin-right: 8px;
-}
-
-.back-link:hover {
-  opacity: 0.8;
-}
-
-.App {
-  height: 100vh;
-  background-color: #9b9b9b;
-}
-
-.login-container {
-  width: 100%;
-  max-width: 1120px;
-  height: 100vh;
-  margin: 0 auto;
-
+.main {
   display: flex;
+  height: calc(100vh - 80px);
+  padding-top: 15px;
+  justify-content: flex-start;
+  background-color: #424246;
+  color: #fff;
+  overflow: auto;
+}
+
+.home,
+.profile,
+.login,
+.water-intake-report {
+  transition: 850ms;
+  width: 100%;
+}
+
+.main.sidebar-active .home,
+.main.sidebar-active .profile,
+.main.sidebar-active .login,
+.main.sidebar-active .water-intake-report {
+  margin-left: 250px;
+}
+
+/* Navbar CSS */
+.navbar {
+  background-color: #3a5899;
+  height: 80px;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
+}
+
+.menu-bars {
+  margin-right: 2rem;
+  font-size: 1.3rem;
+  background: none;
+  color: #fff;
+}
+
+.navbar .menu-bars {
+  display: none !important;
+}
+
+.navbar .menu-bars.active {
+  display: inherit !important;
+}
+
+.nav-menu {
+  background-color: #3a5899;
+  width: 250px;
+  height: 100vh;
+  display: flex;
   justify-content: center;
+  position: fixed;
+  top: 0;
+  left: -100%;
+  transition: 850ms;
 }
 
-.login-container .content {
-  width: 100%;
-  padding: 96px 50px;
-  background: #f0f0f5;
-  box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+.nav-menu.active {
+  left: 0;
+  transition: 450ms;
+}
 
+.nav-menu ul {
+  padding-left: 0px;
+}
+
+.nav-text {
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 0px 8px 12px;
+  list-style: none;
+  height: 50px;
+}
+
+.nav-text a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  width: 95%;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 4px;
+}
+
+.nav-text a:hover,
+.nav-text a.active {
+  background-color: #424246;
+  color: #fff;
+}
+
+.nav-menu ul li ul {
+  display: none;
+  background: #3a5899;
+  padding-bottom: 7px;
+  border: 1px solid #efefef;
+  border-radius: 10px;
+}
+
+.nav-menu ul li ul li {
+  padding: 10px 0px 4px 10px;
+  width: 220px;
+}
+
+.nav-menu ul li ul li a {
+  font-size: 16px;
+}
+
+.nav-text a.active+ul {
+  display: block;
+  position: absolute;
+  z-index: 1;
+}
+
+.nav-menu-items {
+  width: 100%;
+}
+
+.navbar-toggle {
+  background-color: #3a5899;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
 }
 
-.app-container .content {
-  width: 100%;
-  height: 100vh;
-  padding: 50px;
-  padding-top: 107px;
-  background: #f0f0f5;
+span {
+  margin-left: 16px;
 }
 
-.app-container .content section h1 {
-  margin: 64px 0 32px;
-  font-size: 32px;
+.user-info {
+  padding: 30px;
+  padding-bottom: 0;
+  list-style: none;
 }
 
-.app-container .content section p {
+.user-info p {
+  color: #fff;
   font-size: 18px;
-  color: #737380;
-  line-height: 32px;
+  text-align: center;
+  margin-top: 16px;
 }
 
-.app-container .content form {
+.user-info img {
   width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid #fff;
 }
 
 #profile-card .card-header {
   display: flex;
   justify-content: space-between;
 }
-#profile-card:hover .card-header, #profile-card .editing {
+
+#profile-card:hover .card-header,
+#profile-card .editing {
 
   transition: ease;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20%;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+}
+
+.back-link:hover,
+.back-link.active {
+  color: #3a5899;
 }

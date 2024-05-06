@@ -22,7 +22,7 @@ async function getWeightControl(token, max = 0, initial_date = null, final_date 
     queryString += `max=${max}`
   }
   apiPrivate(token);
-  return api.get('api/weight-control'+queryString).then(response => {
+  return api.get('api/weight-control' + queryString).then(response => {
     return response.data
   }).catch(error => {
     console.log('Error', error.message);
@@ -32,7 +32,7 @@ async function getWeightControl(token, max = 0, initial_date = null, final_date 
 async function registerWeightControl(date, weight, token) {
   apiPrivate(token);
 
-  return api.post('api/weight-control',{date, weight}).then(response => {
+  return api.post('api/weight-control', { date, weight }).then(response => {
     return response.data
   }).catch(error => {
     console.log('Error', error.message);
@@ -52,8 +52,10 @@ async function deleteWeightControl(id, token) {
 const useWeightControlData = (max = 0, initial_date = null, final_date = null) => {
   const [cookies, setCookies] = useCookies();
   const { getUserProfileData } = useUserProfileData()
+  const [weightControlData] = useState([])
 
-  const handleGetWeightControl = async (refresh = false, max = 0, initial_date = null, final_date = null) => {
+  const handleGetWeightControl = async (payload) => {
+    const { max, initial_date, final_date, refresh } = payload;
 
     if (cookies.weight_controls && refresh === false) {
       return cookies.weight_controls
@@ -70,18 +72,32 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
       console.log('Error', error.message);
     });
 
-    return {}
+    return []
 
   }
 
-  const [weightControlData] = useState(handleGetWeightControl(false, max, initial_date, final_date))
+  const handleGetWeightControlReport = (payload) => {
+    const { max, initial_date, final_date } = payload;
+    const token = cookies.token
+
+    return getWeightControl(token, max, initial_date, final_date)
+  }
+
+
 
   const handleRegisterWeightControl = async (date, weight) => {
     const token = cookies.token
 
     registerWeightControl(date, weight, token).then(data => {
-      handleGetWeightControl(true, max, initial_date, final_date)
+      const payload = {
+        max: max,
+        initial_date: initial_date,
+        final_date: final_date,
+        refresh: true
+      }
+      handleGetWeightControl(payload)
       getUserProfileData(true);
+      getBobyWeightVariationChartData();
     }).catch((error) => {
       console.log('Error', error.message);
     });
@@ -91,17 +107,48 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
     const token = cookies.token
 
     deleteWeightControl(id, token).then(data => {
-      handleGetWeightControl(true, max, initial_date, final_date)
+      const payload = {
+        max: max,
+        initial_date: initial_date,
+        final_date: final_date,
+        refresh: true
+      }
+      handleGetWeightControl(payload)
       getUserProfileData(true);
+      getBobyWeightVariationChartData();
     }).catch((error) => {
       console.log('Error', error.message);
     });
   }
 
+  const getBobyWeightVariationChartData = async () => {
+    const ano = new Date().getFullYear();
+    let initial_date = ano + '-01-01';
+    let final_date = ano + '-12-31';
+    let max = 0;
+    let refresh = true;
+    await handleGetWeightControlReport(refresh, max, initial_date, final_date).then((response) => {
+      const weightControlReportData = response.weight_control_list;
+      let fetchWeightControlVariationData = [
+        ['Dia', 'Peso Corporal']
+      ];
+      weightControlReportData.forEach((element) => {
+        fetchWeightControlVariationData.push([new Date(element.created_at).toLocaleDateString('pt-BR'), element.weight])
+      });
+      setCookies('weight_control_variation_chart', JSON.stringify(fetchWeightControlVariationData));
+      return fetchWeightControlVariationData;
+    })
+      .catch((error) => {
+        console.log(error.message)
+      });
+  }
+
   return {
     getWeightControlData: handleGetWeightControl,
+    getWeightControlReport: handleGetWeightControlReport,
     setWeightControlData: handleRegisterWeightControl,
     deleteWeightControl: handleDeleteWeightControl,
+    getBobyWeightVariationChartData: getBobyWeightVariationChartData,
     weightControlData
   }
 }

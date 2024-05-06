@@ -14,12 +14,12 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const CardConsumoAguaHoje = () => {
     const [amount, setAmount] = useState(0);
-    const [waterIntakes, setWaterIntakes] = useState(null);
-    const [waterIntakesTotalAmount, setWaterIntakesTotalAmount] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [waterIntakes, setWaterIntakes] = useState([]);
+    const [waterIntakesTotalAmount, setWaterIntakesTotalAmount] = useState(0);
+    const [loading, setLoading] = useState(false);
     const { cookies } = useAuth();
     const userProfileData = cookies.user
-    const { setWaterIntakeData, deleteWaterIntake } = useWaterIntakeData()
+    const { setWaterIntakeData, deleteWaterIntake, getWaterIntakeData } = useWaterIntakeData()
 
     const handleRegisterWaterIntake = async (e) => {
         setWaterIntakeData(amount)
@@ -36,23 +36,27 @@ const CardConsumoAguaHoje = () => {
 
     useEffect(() => {
         async function loadStorageData() {
-            const storageWaterIntakes = cookies.water_intakes;
-
-            if (storageWaterIntakes) {
-                setWaterIntakes(storageWaterIntakes.list);
-                setWaterIntakesTotalAmount(storageWaterIntakes.total_amount);
+            await getWaterIntakeData().then(response => {
+                setWaterIntakes(response.list);
+                setWaterIntakesTotalAmount(response.total_amount);
                 setLoading(false);
-            }
+            }).catch((error) => {
+                console.log(error.message)
+                setLoading(false);
+            });
         }
 
-        loadStorageData();
+        if (!loading) {
+            setLoading(true);
+            loadStorageData();
+        }
 
         return () => {
-            setWaterIntakes(null);
-            setWaterIntakesTotalAmount(null);
+            setWaterIntakes([]);
+            setWaterIntakesTotalAmount(0);
             setLoading(true);
         }
-    }, [cookies.water_intakes]);
+    }, [cookies]);
 
 
     return (
@@ -76,7 +80,7 @@ const CardConsumoAguaHoje = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {waterIntakes.length > 0 ? (
+                                {waterIntakes && waterIntakes.length > 0 ? (
                                     waterIntakes.map((waterIntake, index) => (
                                         <tr key={index}>
                                             <td className='text-center'>{new Date(waterIntake.created_at).toLocaleTimeString('pt-BR')}</td>

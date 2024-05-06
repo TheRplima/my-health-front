@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { useAuth } from "../hooks/auth";
 
-import CardProfilePhoto from '../components/CardProfilePhoto'
+import CardProfileInfo from '../components/CardProfileInfo'
 import CardConsumoAguaHoje from '../components/CardConsumoAguaHoje'
 import CardControlePeso from '../components/CardControlePeso'
 
@@ -21,7 +21,7 @@ const UserProfile = () => {
             refreshUser();
         }
     }
-    , [cookies.token])
+        , [cookies.token])
 
     return (
         <>
@@ -30,7 +30,7 @@ const UserProfile = () => {
                     <Container>
                         <Row>
                             <Col lg={4}>
-                                <CardProfilePhoto />
+                                <CardProfileInfo />
                             </Col>
                             <Col lg={8}>
                                 <Row>
@@ -43,7 +43,7 @@ const UserProfile = () => {
                                 </Row>
                             </Col>
                         </Row>
-                    </Container>    
+                    </Container>
                 </div>
             </div>
         </>

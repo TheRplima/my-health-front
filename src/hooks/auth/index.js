@@ -26,51 +26,47 @@ export const UserProvider = ({ children }) => {
                 return;
             }
 
-            if (keepLoggedIn) {
-                setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7, secure: false });
-                setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7, secure: false });
-                setCookies('keepLoggedIn', true, { maxAge: 60 * 60 * 24 * 7, secure: false });
-            }else {
-                setCookies('token', response.data.authorisation.token, {secure: false});
-                setCookies('user', JSON.stringify(response.data.user), {secure: false});
-                setCookies('keepLoggedIn', false, {secure: false});
-            }
+            setCookies('token', response.data.authorisation.token, { secure: false });
+            setCookies('user', JSON.stringify(response.data.user), { secure: false });
+            setCookies('keepLoggedIn', keepLoggedIn, { secure: false });
 
             //if on mobile use window.location
-            window.location.href = process.env.REACT_APP_HOME_PAGE;
-            
+            navigate(process.env.REACT_APP_HOME_PAGE);
+
         }).catch(error => {
             console.log(error);
             alert('Erro ao realizar login: ' + error.response.data.message);
         });
     };
 
-    const logout = (force = false) => {
-        if (cookies.keepLoggedIn === true && force === false) {
-            ['water_intakes', 'weight_controls', 'water_intake_containers'].forEach(obj => removeCookie(obj));
-        }else{
-            ['token', 'user', 'water_intakes', 'weight_controls', 'water_intake_containers', 'keepLoggedIn'].forEach(obj => removeCookie(obj));
+    const logout = async (force = false) => {
+        apiPrivate();
+        const cookiesToRemove = ['water_intakes', 'weight_controls', 'water_intake_containers', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'];
+        if (cookies.keepLoggedIn === false || force === true) {
+            cookiesToRemove.push('token', 'token_exp', 'user');
         }
-        navigate('/login');
+        cookiesToRemove.forEach(cookie => {
+            removeCookie(cookie);
+        });
+        await api.post('api/logout').then(response => {
+            navigate('/login');
+        }).catch(error => {
+            console.log('Error', error.message);
+            navigate('/login');
+        });
+
     };
 
     const refreshUser = async () => {
         apiPrivate();
-
         return await api.post('api/refresh').then(response => {
             if (checkToken(response.data.authorisation.token) === false) {
                 alert('Token expirado, faça login novamente');
                 logout();
                 return;
             }
-            const keepLoggedIn = cookies.keepLoggedIn;
-            if (keepLoggedIn) {
-                setCookies('token', response.data.authorisation.token, { maxAge: 60 * 60 * 24 * 7 });
-                setCookies('user', JSON.stringify(response.data.user), { maxAge: 60 * 60 * 24 * 7 });
-            }else {
-                setCookies('token', response.data.authorisation.token);
-                setCookies('user', JSON.stringify(response.data.user));
-            }
+            setCookies('token', response.data.authorisation.token, { secure: false });
+            setCookies('user', JSON.stringify(response.data.user), { secure: false });
         }).catch(error => {
             console.log('Error', error.message);
         });
@@ -89,16 +85,21 @@ export const UserProvider = ({ children }) => {
         if (decodedJwt.exp * 1000 < Date.now()) {
             return false;
         }
+        if (!cookies.token_exp) {
+            setCookies('token_exp', decodedJwt.exp * 1000, { secure: false });
+        }
         return true;
     }
 
     const value = useMemo(
         () => ({
             cookies,
+            setCookies,
             login,
             logout,
             refreshUser,
-            checkToken
+            checkToken,
+            parseJwt
         }),
         [cookies]
     );

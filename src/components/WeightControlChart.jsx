@@ -3,19 +3,18 @@ import { Chart } from "react-google-charts";
 import Spinner from 'react-bootstrap/Spinner';
 import { Card } from "react-bootstrap";
 
-const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) => {
+const WeightControlChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) => {
 
   const options = {
-    title: title ? title : "Consumo de água no período",
-    vAxis: { title: vAxisTitle ? vAxisTitle : "Qtde (ml)" },
+    title: title ? title : "Variação do peso corporal ao longo do ano",
+    vAxis: { title: vAxisTitle ? vAxisTitle : "Peso" },
     hAxis: { title: hAxisTitle ? hAxisTitle : "Dia" },
-    graph_id: chartId ? chartId : "WaterIntakeChart",
-    seriesType: "bars",
-    series: { 1: { type: "line" } },
+    graph_id: chartId ? chartId : "WeightControlChart",
+    seriesType: "line",
     pointSize: 10,
     animation: {
       duration: 1500,
-      easing: "InAndOut",
+      easing: "out",
       startup: true,
     }
   };
@@ -59,4 +58,4 @@ const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) => {
   )
 }
 
-export default WaterIntakeChart
+export default WeightControlChart
