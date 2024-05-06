@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [keepLoggedIn, setKeepLoggedIn] = useState('');
+    const [keepLoggedIn, setKeepLoggedIn] = useState(false);
     const { login, cookies } = useAuth();
     const navigate = useNavigate();
 
@@ -48,26 +48,18 @@ export default function Login() {
                                 <Form>
                                     <Form.Group className="mb-3" controlId="loginFormEmail">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control required type="email" onChange={(e) => setEmail(e.target.value)} onKeyPress={event => {
-                                            if (event.key === "Enter") {
-                                                handleSubmit();
-                                            }
-                                        }} />
+                                        <Form.Control required type="email" name={'email'} onChange={(e) => setEmail(e.target.value)} />
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="loginFormPassword">
                                         <Form.Label>Senha</Form.Label>
-                                        <Form.Control required type="password" minLength={6} onChange={(e) => setPassword(e.target.value)} onKeyPress={event => {
-                                            if (event.key === "Enter") {
-                                                handleSubmit();
-                                            }
-                                        }} />
+                                        <Form.Control required type="password" name={'password'} minLength={6} onChange={(e) => setPassword(e.target.value)} />
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="keepLogggedIn">
                                         <Form.Check // prettier-ignore
                                             type='checkbox'
-                                            id={'keepLoggedIn'}
+                                            name={'keepLoggedIn'}
                                             label={'Manter conectado'}
                                             onChange={(e) => setKeepLoggedIn(e.target.checked)}
                                             checked={keepLoggedIn}
