@@ -39,32 +39,37 @@ export const UserProvider = ({ children }) => {
         });
     };
 
-    const logout = (force = false) => {
-        if (cookies.keepLoggedIn === true && force === false) {
-            ['water_intakes', 'weight_controls', 'water_intake_containers', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'].forEach(obj => removeCookie(obj));
-        } else {
-            ['token', 'user', 'water_intakes', 'weight_controls', 'water_intake_containers', 'keepLoggedIn', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'].forEach(obj => removeCookie(obj));
+    const logout = async (force = false) => {
+        apiPrivate();
+        const cookiesToRemove = ['water_intakes', 'weight_controls', 'water_intake_containers', 'monthly_water_intake_chart', 'weekly_water_intake_chart', 'weight_control_variation_chart'];
+        if (cookies.keepLoggedIn === false || force === true) {
+            cookiesToRemove.push('token', 'token_exp', 'user');
         }
-        navigate('/login');
+        cookiesToRemove.forEach(cookie => {
+            removeCookie(cookie);
+        });
+        await api.post('api/logout').then(response => {
+            navigate('/login');
+        }).catch(error => {
+            console.log('Error', error.message);
+            navigate('/login');
+        });
+
     };
 
     const refreshUser = async () => {
         apiPrivate();
-        const decodedJwt = parseJwt(cookies?.token);
-        console.log(new Date(decodedJwt.exp * 1000));
-        if (decodedJwt.exp * 1000 - Date.now() < 30000) {
-            return await api.post('api/refresh').then(response => {
-                if (checkToken(response.data.authorisation.token) === false) {
-                    alert('Token expirado, faça login novamente');
-                    logout();
-                    return;
-                }
-                setCookies('token', response.data.authorisation.token, { secure: false });
-                setCookies('user', JSON.stringify(response.data.user), { secure: false });
-            }).catch(error => {
-                console.log('Error', error.message);
-            });
-        }
+        return await api.post('api/refresh').then(response => {
+            if (checkToken(response.data.authorisation.token) === false) {
+                alert('Token expirado, faça login novamente');
+                logout();
+                return;
+            }
+            setCookies('token', response.data.authorisation.token, { secure: false });
+            setCookies('user', JSON.stringify(response.data.user), { secure: false });
+        }).catch(error => {
+            console.log('Error', error.message);
+        });
     }
 
     const parseJwt = (token) => {
@@ -80,7 +85,9 @@ export const UserProvider = ({ children }) => {
         if (decodedJwt.exp * 1000 < Date.now()) {
             return false;
         }
-        setCookies('token_exp', decodedJwt.exp * 1000, { secure: false });
+        if (!cookies.token_exp) {
+            setCookies('token_exp', decodedJwt.exp * 1000, { secure: false });
+        }
         return true;
     }
 
@@ -91,7 +98,8 @@ export const UserProvider = ({ children }) => {
             login,
             logout,
             refreshUser,
-            checkToken
+            checkToken,
+            parseJwt
         }),
         [cookies]
     );

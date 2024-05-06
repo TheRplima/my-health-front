@@ -35,8 +35,8 @@ export default function WeeklyWaterIntake() {
         }
 
         return () => {
-            setWaterIntakesChartData({});
-            setLoading(false);
+            setWaterIntakesChartData([]);
+            setLoading(true);
         }
     }, [cookies]);
 

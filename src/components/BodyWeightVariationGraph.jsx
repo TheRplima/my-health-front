@@ -32,7 +32,7 @@ export default function BodyWeightVariationGraph() {
 
         return () => {
             setWeightControlsChartData({});
-            setLoading(false);
+            setLoading(true);
         }
     }, [cookies]);
 

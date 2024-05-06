@@ -52,8 +52,10 @@ async function deleteWeightControl(id, token) {
 const useWeightControlData = (max = 0, initial_date = null, final_date = null) => {
   const [cookies, setCookies] = useCookies();
   const { getUserProfileData } = useUserProfileData()
+  const [weightControlData] = useState([])
 
-  const handleGetWeightControl = async (refresh = false, max = 0, initial_date = null, final_date = null) => {
+  const handleGetWeightControl = async (payload) => {
+    const { max, initial_date, final_date, refresh } = payload;
 
     if (cookies.weight_controls && refresh === false) {
       return cookies.weight_controls
@@ -70,23 +72,30 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
       console.log('Error', error.message);
     });
 
-    return {}
+    return []
 
   }
 
-  const handleGetWeightControlReport = (data) => {
+  const handleGetWeightControlReport = (payload) => {
+    const { max, initial_date, final_date } = payload;
     const token = cookies.token
-    const max = 0;
+
     return getWeightControl(token, max, initial_date, final_date)
   }
 
-  const [weightControlData] = useState(handleGetWeightControl(false, max, initial_date, final_date))
+
 
   const handleRegisterWeightControl = async (date, weight) => {
     const token = cookies.token
 
     registerWeightControl(date, weight, token).then(data => {
-      handleGetWeightControl(true, max, initial_date, final_date)
+      const payload = {
+        max: max,
+        initial_date: initial_date,
+        final_date: final_date,
+        refresh: true
+      }
+      handleGetWeightControl(payload)
       getUserProfileData(true);
       getBobyWeightVariationChartData();
     }).catch((error) => {
@@ -98,7 +107,13 @@ const useWeightControlData = (max = 0, initial_date = null, final_date = null) =
     const token = cookies.token
 
     deleteWeightControl(id, token).then(data => {
-      handleGetWeightControl(true, max, initial_date, final_date)
+      const payload = {
+        max: max,
+        initial_date: initial_date,
+        final_date: final_date,
+        refresh: true
+      }
+      handleGetWeightControl(payload)
       getUserProfileData(true);
       getBobyWeightVariationChartData();
     }).catch((error) => {

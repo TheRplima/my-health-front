@@ -14,11 +14,11 @@ import Spinner from 'react-bootstrap/Spinner';
 const CardControlePeso = () => {
     const [weight, setWeight] = useState(0);
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [userProfileData, setUserProfileData] = useState(null);
-    const [weightControls, setWeightControls] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [userProfileData, setUserProfileData] = useState({});
+    const [weightControls, setWeightControls] = useState([]);
+    const [loading, setLoading] = useState(false);
     const { cookies } = useAuth();
-    const { setWeightControlData, deleteWeightControl } = useWeightControlData(5)
+    const { setWeightControlData, deleteWeightControl, getWeightControlData } = useWeightControlData()
 
     const handleRegisterWeightControl = async (e) => {
         setWeightControlData(date, weight)
@@ -35,27 +35,32 @@ const CardControlePeso = () => {
 
     useEffect(() => {
         async function loadStorageData() {
-            const storageWeightControl = cookies.weight_controls;
-            const storageUserProfile = cookies.user;
-
-            if (storageWeightControl) {
-                setWeightControls(storageWeightControl);
-                setLoading(false);
+            const payload = {
+                max: 5,
+                initial_date: null,
+                final_date: null,
+                refresh: false
             }
-
-            if (storageUserProfile) {
-                setUserProfileData(storageUserProfile);
+            await getWeightControlData(payload).then(response => {
+                setUserProfileData(cookies.user);
+                setWeightControls(response);
                 setLoading(false);
-            }
+            }).catch((error) => {
+                console.log(error.message)
+            });
+
         }
 
-        loadStorageData();
+        if (!loading) {
+            setLoading(true);
+            loadStorageData();
+        }
 
         return () => {
-            setWeightControls(null);
+            setWeightControls([]);
             setLoading(true);
         }
-    }, [cookies.weight_controls]);
+    }, [cookies]);
 
     return (
         <>
@@ -77,7 +82,7 @@ const CardControlePeso = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {weightControls?.length > 0 ? (
+                                {weightControls && weightControls.length > 0 ? (
                                     weightControls.map((weightControl, index) => (
                                         <tr key={index}>
                                             <td className='text-center'>{new Date(weightControl.created_at).toLocaleDateString('pt-BR')}</td>

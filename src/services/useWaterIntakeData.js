@@ -107,7 +107,7 @@ const useWaterIntakeData = () => {
     return getWaterIntakeReport(token, data)
   }
 
-  const [waterIntakeData] = useState(handleGetWaterIntake())
+  const [waterIntakeData] = useState([])
 
   const handleRegisterWaterIntake = async (amount) => {
     const token = cookies.token

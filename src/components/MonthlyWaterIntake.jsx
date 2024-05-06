@@ -32,7 +32,7 @@ export default function MonthlyWaterIntake() {
 
         return () => {
             setWaterIntakesChartData({});
-            setLoading(false)
+            setLoading(true)
         }
     }, [cookies]);
 
