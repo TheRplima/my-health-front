@@ -16,16 +16,16 @@ export default function BodyWeightVariationGraph() {
                 setLoading(false);
             }).catch((error) => {
                 console.log(error.message)
+                setLoading(false);
             });
         }
 
         if (!loading) {
+            setLoading(true);
             if (cookies.weight_control_variation_chart) {
-                setLoading(true);
                 setWeightControlsChartData(cookies.weight_control_variation_chart);
                 setLoading(false);
             } else {
-                setLoading(true);
                 loadStorageData();
             }
         }

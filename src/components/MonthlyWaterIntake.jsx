@@ -16,16 +16,16 @@ export default function MonthlyWaterIntake() {
                 setLoading(false);
             }).catch((error) => {
                 console.log(error.message)
+                setLoading(false);
             });
         }
 
         if (!loading) {
+            setLoading(true);
             if (cookies.monthly_water_intake_chart) {
-                setLoading(true);
                 setWaterIntakesChartData(cookies.monthly_water_intake_chart);
                 setLoading(false);
             } else {
-                setLoading(true);
                 loadStorageData();
             }
         }

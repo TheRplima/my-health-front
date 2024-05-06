@@ -16,20 +16,20 @@ export default function WeeklyWaterIntake() {
                 setLoading(false);
             }).catch((error) => {
                 console.log(error.message)
+                setLoading(false);
             });
         }
 
         if (!loading) {
+            setLoading(true);
             if (cookies.weekly_water_intake_chart) {
                 const wwic = cookies.weekly_water_intake_chart;
                 if (wwic.length === 1) {
                     wwic.push([new Date().toISOString().split('T')[0], 0, cookies.user.daily_water_amount])
                 }
-                setLoading(true);
                 setWaterIntakesChartData(cookies.weekly_water_intake_chart);
                 setLoading(false);
             } else {
-                setLoading(true);
                 loadStorageData();
             }
         }

@@ -65,7 +65,7 @@ const CardProfileInfo = () => {
             if (storageUser && storageToken) {
                 setUser(storageUser)
             }
-            setLoading(false);
+            setLoading(true);
         }
 
         loadStorageData();
