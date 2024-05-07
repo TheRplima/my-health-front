@@ -54,9 +54,9 @@ const CardConsumoAguaHoje = () => {
         return () => {
             setWaterIntakes([]);
             setWaterIntakesTotalAmount(0);
-            setLoading(true);
+            setLoading(false);
         }
-    }, [cookies]);
+    }, [cookies.water_intakes]);
 
 
     return (

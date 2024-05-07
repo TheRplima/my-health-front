@@ -38,7 +38,7 @@ export default function WeeklyWaterIntake() {
             setWaterIntakesChartData([]);
             setLoading(true);
         }
-    }, [cookies]);
+    }, [cookies.water_intakes, cookies.weekly_water_intake_chart, cookies.monthly_water_intake_chart]);
 
     return (<WaterIntakeChart chartId={'weekly'} data={waterIntakesChartData} title={'Consumo de água na semana'} hAxisTitle={'Dia'} />)
 }

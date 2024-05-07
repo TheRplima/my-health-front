@@ -32,9 +32,9 @@ export default function BodyWeightVariationGraph() {
 
         return () => {
             setWeightControlsChartData({});
-            setLoading(true);
+            setLoading(false);
         }
-    }, [cookies]);
+    }, [cookies.weight_control_variation_chart, cookies.weight_controls]);
 
     return (<WeightControlChart chartId={'weight-contnrol-variation'} data={weightControlsChartData} title={'Variação do peso corporal ao longo do ano'} hAxisTitle={'Dia'} />)
 }

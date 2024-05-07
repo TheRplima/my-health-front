@@ -7,7 +7,6 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Dropdown } from 'react-bootstrap';
 
 function FormControlWaterIntakeContainerSelect(props) {
-    const { waterIntakeContainerData } = useWaterIntakeContainerData();
     const { cookies } = useAuth();
     const [waterIntakeContainers, setWaterIntakeContainers] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -19,7 +18,7 @@ function FormControlWaterIntakeContainerSelect(props) {
         setIcon(props.toReport && parseInt(evtKey) === 0 ? 0 : container.icon);
         props.setAmount(evtKey);
     }
-
+    useWaterIntakeContainerData();
     useEffect(() => {
         async function loadStorageData() {
             const storageWaterIntakeContainers = cookies.water_intake_containers;
@@ -32,7 +31,7 @@ function FormControlWaterIntakeContainerSelect(props) {
         loadStorageData();
         return () => {
             setWaterIntakeContainers(null);
-            setLoading(true);
+            setLoading(false);
         }
     }, [cookies.water_intake_containers]);
 
@@ -50,7 +49,7 @@ function FormControlWaterIntakeContainerSelect(props) {
                         <>
                             {props.toReport ? (
                                 <Dropdown.Item eventKey={0}>Todos</Dropdown.Item>
-                            
+
                             ) : null}
                             {waterIntakeContainers?.length > 0 ? (
                                 waterIntakeContainers.map((waterIntakeContainer, index) => (

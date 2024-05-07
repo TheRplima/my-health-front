@@ -59,9 +59,9 @@ const CardControlePeso = () => {
 
         return () => {
             setWeightControls([]);
-            setLoading(true);
+            setLoading(false);
         }
-    }, [cookies]);
+    }, [cookies.weight_controls]);
 
     return (
         <>
