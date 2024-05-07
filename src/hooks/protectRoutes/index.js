@@ -4,25 +4,31 @@ import { useAuth } from '../auth';
 
 export const ProtectRoutes = () => {
     const { cookies, refreshUser, parseJwt, logout } = useAuth();
-    const [token, setToken] = useState(null)
+    const [tries, setTries] = useState(0)
     const [refreshing, setRefreshing] = useState(false)
     const interval = useRef(null)
+    const expTimeDelay = 1 * 60 * 1000;
 
     useEffect(() => {
         const refreshToken = async () => {
+            clearInterval(interval.current);
+            interval.current = null;
             await refreshUser().then(() => {
                 setRefreshing(false);
+                initInterval();
+                console.log('Token refreshed');
+                setTries(0);
             }).catch((error) => {
                 console.log(error.message);
+                setRefreshing(false);
+                setTries(tries + 1);
             });
         }
 
-        if (!refreshing) {
+        const initInterval = () => {
             interval.current = setInterval(() => {
-                if (!token) {
-                    setToken(cookies.token ?? null)
-                }
-                const keepLoggedIn = cookies.keepLoggedIn ?? false;
+                const token = cookies.token;
+                const keepLoggedIn = cookies.keepLoggedIn;
 
                 if (token === null) {
                     clearInterval(interval.current);
@@ -31,18 +37,23 @@ export const ProtectRoutes = () => {
                 }
 
                 const decodedJwt = parseJwt(token);
-                if (new Date(decodedJwt.exp * 1000 - 30000) < Date.now() && keepLoggedIn === true) {
+
+                if (new Date(decodedJwt.exp * 1000 - expTimeDelay) < Date.now() && keepLoggedIn === true && tries < 3) {
                     setRefreshing(true);
                     refreshToken();
-                } else if (new Date(decodedJwt.exp * 1000 - 30000) < Date.now() && keepLoggedIn === false) {
-                    setToken(null)
+                } else if (new Date(decodedJwt.exp * 1000 - expTimeDelay) < Date.now() && (keepLoggedIn === false || tries > 2)) {
                     logout();
+                    clearInterval(interval.current);
+                    interval.current = null;
+                    console.log('Token expired');
                 }
-            }, 1000)
+            }, 10000)
+        }
+        if (!refreshing) {
+            initInterval();
         }
         return () => {
             clearInterval(interval.current);
-            setRefreshing(false);
         };
     });
 
