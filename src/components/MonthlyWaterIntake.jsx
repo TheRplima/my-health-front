@@ -31,7 +31,7 @@ export default function MonthlyWaterIntake() {
         }
 
         return () => {
-            setWaterIntakesChartData({});
+            setWaterIntakesChartData([]);
             setLoading(true)
         }
     }, [cookies.water_intakes, cookies.weekly_water_intake_chart, cookies.monthly_water_intake_chart]);
