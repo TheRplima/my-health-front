@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useCookies } from 'react-cookie';
 import api from './api';
-import apiTelegram from './apiTelegram';
 import Utils from '../hooks/utils';
 
 const apiPrivate = (token) => {
@@ -51,12 +50,6 @@ async function registerWaterIntake(amount, token) {
   apiPrivate(token);
 
   return api.post('api/water-intake', { amount }).then(response => {
-    apiTelegram.post('sendMessage', {
-      chat_id: process.env.REACT_APP_API_TELEGRAM_CHAT_ID,
-      text: `/drinkWater ${amount}`
-    }).catch(error => {
-      console.log('Error', error.message);
-    });
     return response.data
   }).catch(error => {
     console.log('Error', error.message);

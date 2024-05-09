@@ -92,16 +92,18 @@ const CardConsumoAguaHoje = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="3" className='text-center'>
+                                        <td></td>
+                                        <td className='nodata text-center d-flex align-items-center justify-content-center'>
                                             <Card.Text>Nenhum registro encontrado</Card.Text>
                                         </td>
+                                        <td></td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
                     </Card.Body>
                 ) : (
-                    <Card.Body className='text-center'>
+                    <Card.Body className='text-center loading'>
                         <Spinner animation="border" role="status">
                             <span className="sr-only">Loading...</span>
                         </Spinner>

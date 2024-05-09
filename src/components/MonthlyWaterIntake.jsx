@@ -34,7 +34,7 @@ export default function MonthlyWaterIntake() {
             setWaterIntakesChartData([]);
             setLoading(true)
         }
-    }, [cookies.water_intakes, cookies.weekly_water_intake_chart, cookies.monthly_water_intake_chart]);
+    }, [cookies.water_intakes, cookies.monthly_water_intake_chart]);
 
     return (<WaterIntakeChart chartId={'monthly'} data={waterIntakesChartData} title={'Consumo de água no mês'} hAxisTitle={'Semana'} />)
 }

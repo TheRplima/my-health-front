@@ -22,8 +22,8 @@ const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) => {
 
   return (
     <>
-      {data !== undefined && data.length > 0 ? (
-        <Card>
+      <Card>
+        {data !== undefined && data.length > 0 ? (
           <Card.Body id={'chart_' + chartId} className={'d-flex align-items-center justify-content-center text-center'}>
             <Chart
               chartType="ComboChart"
@@ -31,30 +31,30 @@ const WaterIntakeChart = ({ data, title, vAxisTitle, hAxisTitle, chartId }) => {
               width={"100%"}
               height={"100%"}
               loader={
-                <Spinner animation="border" role="status">
-                  <span className="sr-only">Loading...</span>
-                </Spinner>
+                <Card.Body className='text-center loading'>
+                  <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </Spinner>
+                </Card.Body>
               }
               data={data}
               options={options}
             />
           </Card.Body>
-        </Card>
-      ) : (
-        <Card className="mb-3 h-100">
+        ) : (
           <Card.Body>
             <table className='table table-striped table-hover'>
               <tbody>
                 <tr>
-                  <td colSpan="3" className='text-center'>
+                  <td colSpan="3" className='nodata text-center d-flex align-items-center justify-content-center'>
                     <Card.Text>Nenhum registro encontrado</Card.Text>
                   </td>
                 </tr>
               </tbody>
             </table>
           </Card.Body>
-        </Card>
-      )}
+        )}
+      </Card>
     </>
   )
 }

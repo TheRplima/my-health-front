@@ -192,3 +192,13 @@ span {
 .back-link.active {
   color: #3a5899;
 }
+
+.profile .card {
+  width: 100%;
+}
+
+.profile .card .card-body,
+.profile .card .card-body .nodata {
+  min-height: 200px;
+  transition: 850ms;
+}
