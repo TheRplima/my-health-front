@@ -8,6 +8,10 @@
   font-family: "Lato", sans-serif;
 }
 
+body {
+  overflow: hidden;
+}
+
 .main {
   display: flex;
   height: calc(100vh - 80px);
@@ -201,4 +205,72 @@ span {
 .profile .card .card-body .nodata {
   min-height: 200px;
   transition: 850ms;
+}
+
+/* position .notification div at the top right corner of the page */
+
+
+.notifications .container {
+  right: 10px;
+}
+
+#usermenu {
+  position: absolute;
+  padding: 10px;
+  top: 0;
+  right: 55px;
+  z-index: 1;
+}
+
+#notifications-container {
+  position: absolute;
+  top: 80px;
+}
+
+#notifications-card {
+  width: 400px;
+}
+
+#notifications-card>.card-body {
+  max-height: 60vh;
+  overflow-y: scroll;
+}
+
+.notification-item {
+  font-size: 12px;
+}
+
+.notification-item .notification-item-content a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.notification-item .notification-item-content a:hover {
+  color: #3a5899;
+}
+
+.notification-item .notification-item-content>div>p {
+  overflow: hidden;
+  text-align: justify;
+  height: 0;
+}
+
+.notification-item .notification-item-content>div>p.expanded {
+  height: auto;
+  max-height: fit-content;
+  -webkit-transition: max-height 1s;
+  -moz-transition: max-height 1s;
+  -ms-transition: max-height 1s;
+  -o-transition: max-height 1s;
+  transition: max-height 1s;
+  /* animation scroll down slow */
+
+}
+
+#usermenu img {
+  max-width: 48px;
+  max-height: 48px;
+  border-radius: 25%;
+  border: 1px solid #efefef;
 }

@@ -7,9 +7,15 @@ import { IconContext } from "react-icons";
 
 import { useAuth } from "../hooks/auth";
 
-function Navbar(props) {
+import Navbar from 'react-bootstrap/Navbar';
+import Notifications from "./Notifications";
+
+function SideBar(props) {
+
     const { logout, cookies } = useAuth();
     const [active, setActive] = useState(true);
+    const user = cookies.user;
+    const token = cookies.token;
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -21,13 +27,9 @@ function Navbar(props) {
         setActive(!active);
     }
 
-    const user = cookies.user;
-    const token = cookies.token;
-
     const handleClickMenuDropdown = (e) => {
         e.preventDefault();
         const parent = e.target.parentElement;
-        const subNav = parent.querySelector('ul');
         parent.classList.toggle('active');
     }
 
@@ -49,12 +51,10 @@ function Navbar(props) {
                         {token ? (
                             <li className="user-info">
                                 <img
+                                    alt="User profile"
                                     src={token && user.image ? process.env.REACT_APP_API_BASE_URL + 'storage/' + user.image : 'https://via.placeholder.com/150'}
-                                    alt="UserName profile image"
                                 />
-                                <p>
-                                    {user.name}
-                                </p>
+                                <p>{user.name}</p>
                             </li>
                         ) : (null)}
                         {SidebarData.map((item, index) => {
@@ -99,8 +99,12 @@ function Navbar(props) {
                     </ul>
                 </nav>
             </IconContext.Provider>
+
+            <Navbar id={'usermenu'} expand="sm">
+                <Notifications />
+            </Navbar>
         </>
     );
 }
 
-export default Navbar;
+export default SideBar;

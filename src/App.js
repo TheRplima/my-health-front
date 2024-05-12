@@ -6,7 +6,7 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import WaterIntakeReport from './pages/WaterIntakeReport';
 
-import NavBar from './components/NavBar';
+import SideBar from './components/SideBar';
 import Dashboard from './pages/Dashboard';
 import WeightControlReport from './pages/WeightControlReport';
 
@@ -19,7 +19,7 @@ export default function App() {
     <>
       <div className='app-container'>
         <div className='sidebar'>
-          <NavBar setSidebar={setSidebar} pathname={pathname} />
+          <SideBar setSidebar={setSidebar} pathname={pathname} />
         </div>
         <div className={!sidebar ? "main" : "main sidebar-active"}>
           <Routes>
